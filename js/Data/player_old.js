@@ -19,7 +19,7 @@ Properties:
 
 var playerData ={
 	info:{
-		src:`images/skull.png`
+		src:`images/mrt.png`
 	},
 	states:{
 		//The idle animation 
