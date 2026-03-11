@@ -328,69 +328,398 @@
 
 // }
 
-var gravity = 1;
+// var gravity = 1;
+// var friction = {x:.85,y:.97}
+
+// var stage = new GameObject({width:canvas.width, height:canvas.height});
+
+// var level = new GameObject({x:0,y:0});
+
+// //Avatar
+// var wiz = new GameObject({width:128, height:128, spriteData:playerData}).makeSprite(playerData)
+// wiz.force=1
+
+// //Ground
+// var ground = new GameObject({width:canvas.width*10, x:canvas.width*10/2-200,height:64,y:canvas.height-32, color:"green", world:level})
+// ground.img.src=`images/ground3.png`
+
+// //Platform
+// var plat = new GameObject({width:256, height:64,y:canvas.height-200, color:"green", world:level})
+
+// var leftBorder = new GameObject({width:50, height:canvas.height, world:level, x:0})
+
+// //Tile grids
+// var cave = new Grid(caveData, {world:level, x:1024, tileHeight:64, tileWidth:64});
+// var caveBack = new Grid(caveBackData, {world:level, x:1024, tileHeight:64, tileWidth:64});
+// var caveHit = new Grid(caveHitData, {world:level, x:1024, tileHeight:64, tileWidth:64});
+
+// var g1 = new Group();
+// g1.color= `rgb(251,0,254)`;
+// g1.add([ground, leftBorder, caveHit.grid])
+
+// var rects = new Group();
+// rects.add([ground,plat])
+
+// var sprites = new Group();
+// sprites.add([caveBack.grid])
+
+// var front = new Group()
+// front.add([cave.grid])
+
+// var levelItems=new Group();
+// levelItems.add([caveBack.grid, ground, plat, cave.grid]);
+
+// //Sky
+// var sky = new GameObject({width:canvas.width, height:canvas.height, color:"cyan"})
+// sky.img.src = `images/sky2.png`
+
+// //Background
+// var rbg = new GameObject({x:level.x, y:level.y, width:1024, height:512})
+// rbg.img.src=`images/hills.png`
+
+// var bg = new GameObject({x:level.x,y:level.y, width:canvas.width*4, height:canvas.height})
+// bg.img.src=`images/bgfull.png`
+
+// /* BULLETS */
+
+// var bullets=[]
+// var canShoot=true;
+// var shotTimer = 0;
+// var shotDelay = 20;
+
+// var fireDelay = 15;
+// var fireTimer = 0;
+
+// var currentBullet = 0;
+
+// for(let i=0; i<100; i++)
+// {
+// 	bullets[i] = new GameObject({width:64, height:64})
+// 	bullets[i].img.src="images/shoot.png"
+// 	bullets[i].y=-100000
+// }
+
+// /* GAME STATE */
+
+// gameStates[`level1`] = function()
+// {
+
+// 	if(!keys[`W`] && !keys[`S`] && !keys[`D`] && !keys[`A`] && !keys[` `] && canShoot && wiz.canJump)
+// 	{
+// 		wiz.changeState(`idle`)
+// 	}
+
+// 	if(keys[`S`])
+// 	{
+// 		wiz.top={x:0,y:0};
+// 		wiz.changeState(`crouch`)
+// 	}
+// 	else
+// 	{
+// 		wiz.top={x:0,y:-wiz.hitBoxHeight/2};
+// 	}
+
+// 	if(keys[`D`])
+// 	{
+// 		wiz.dir=1;
+// 		if(wiz.currentState != `crouch`) 
+// 		{
+// 			if(wiz.canJump)wiz.changeState(`walk`)
+// 			wiz.vx += wiz.force
+// 		}
+// 	}
+
+// 	if(keys[`A`])
+// 	{
+// 		wiz.dir=-1;
+// 		if(wiz.currentState != `crouch`) 
+// 		{
+// 			if(wiz.canJump)wiz.changeState(`walk`)
+// 			wiz.vx += -wiz.force
+// 		}
+// 	}
+
+// 	if(keys[`W`] && wiz.canJump )
+// 	{
+// 		wiz.canJump = false;
+// 		wiz.vy = wiz.jumpHeight;
+// 		wiz.changeState(`jump`)
+// 	}
+
+// 	shotTimer--;
+// 	if(shotTimer <=0) canShoot=true
+// 	else canShoot=false
+
+// 	/* START SHOOT DELAY */
+
+// 	if(keys[` `] && canShoot && fireTimer==0)
+// 	{
+// 		wiz.changeState(`attack`)
+// 		fireTimer = fireDelay
+// 	}
+
+// 	/* FIRE BULLET AFTER DELAY */
+
+// 	if(fireTimer > 0)
+// 	{
+// 		fireTimer--
+
+// 		if(fireTimer == 0)
+// 		{
+// 			bullets[currentBullet].vx = 10 * wiz.dir
+// 			bullets[currentBullet].world = level
+// 			bullets[currentBullet].x = wiz.x - level.x + (wiz.dir * 96)
+// 			bullets[currentBullet].y = wiz.y + 20
+
+// 			currentBullet++
+// 			if(currentBullet >= bullets.length)
+// 			{
+// 				currentBullet = 0
+// 			}
+
+// 			shotTimer = shotDelay
+// 		}
+// 	}
+
+// 	/* PLAYER MOVEMENT */
+
+// 	wiz.vy+= gravity
+// 	wiz.vx *= friction.x
+// 	wiz.vy *= friction.y
+// 	wiz.x += Math.round(wiz.vx)
+// 	wiz.y += Math.round(wiz.vy)
+
+// 	let offset = {x:Math.round(wiz.vx), y:Math.round(wiz.vy)}
+
+// 	while(g1.collide(wiz.bottom) && wiz.vy>=0)
+// 	{
+// 		wiz.canJump = true;
+// 		wiz.vy=0;
+// 		wiz.y--;
+// 		offset.y--;
+// 	}
+
+// 	if(wiz.x < canvas.width*.33 || wiz.x > canvas.width *.66)
+// 	{
+// 		wiz.x -= offset.x;
+// 		level.x -= offset.x;
+// 		rbg.x -= offset.x*.5;
+// 		bg.x -= offset.x*.75;
+// 	}
+
+// 	/* BACKGROUND */
+
+// 	var groundPattern = context.createPattern(ground.img, `repeat`);
+// 	ground.color = groundPattern
+// 	plat.color = groundPattern
+
+// 	var skyPattern = context.createPattern(sky.img, `repeat`);
+// 	sky.color = skyPattern
+
+// 	sky.render()
+
+// 	rbg.drawStaticImage({x:0,y:0});
+// 	rbg.drawStaticImage({x:-rbg.width,y:0});
+// 	rbg.drawStaticImage({x:rbg.width,y:0});
+
+// 	bg.drawStaticImage({x:0,y:0});
+
+// 	rects.render(`drawRect`)
+// 	sprites.play().render(`drawSprite`);
+// 	wiz.play(function(){return}).drawSprite()
+
+// 	/* BULLET LOOP */
+
+// 	for(let i=0; i<bullets.length; i++)
+// 	{
+// 		bullets[i].move()
+
+// 		context.drawImage(
+// 			bullets[i].img,
+// 			bullets[i].x + level.x,
+// 			bullets[i].y,
+// 			bullets[i].width,
+// 			bullets[i].height
+// 		)
+// 	}
+
+// 	front.play().render(`drawSprite`);
+// }
+
+
+/* ---------------- PLAYER DATA ---------------- */
+
+var playerData ={
+	info:{
+		src:`images/snale1.png`
+	},
+
+	states:{
+		idle:{
+			fps:15,
+			cycle:true,
+			frames:[
+				{width:128, height:128, startX:0, startY:0},
+				{width:128, height:128, startX:128, startY:0}
+			]
+		},
+
+		walk:{
+			fps:1,
+			cycle:true,
+			frames:[
+				{width:128, height:128, startX:0, startY:0},
+				{width:128, height:128, startX:128, startY:0},
+				{width:128, height:128, startX:256, startY:0},
+				{width:128, height:128, startX:384, startY:0},
+				{width:128, height:128, startX:512, startY:0}
+			]
+		},
+
+		jump:{
+			fps:15,
+			cycle:false,
+			frames:[
+				{width:128, height:128, startX:640, startY:0}
+			]
+		},
+
+		crouch:{
+			fps:15,
+			cycle:true,
+			frames:[
+				{width:128, height:128, startX:768, startY:0},
+				{width:128, height:128, startX:768, startY:0},
+				{width:128, height:128, startX:768, startY:0},
+				{width:128, height:128, startX:768, startY:0},
+				{width:128, height:128, startX:896, startY:0}
+			]
+		},
+
+		attack:{
+			fps:3,
+			cycle:false,
+			frames:[
+				{width:128, height:128, startX:1024, startY:0},
+				{width:128, height:128, startX:1024, startY:0},
+				{width:128, height:128, startX:1024, startY:0},
+				{width:128, height:128, startX:1152, startY:0},
+				{width:128, height:128, startX:1152, startY:0},
+				{width:128, height:128, startX:1152, startY:0},
+				{width:128, height:128, startX:1152, startY:0}
+			]
+		}
+	}
+}
+
+
+/* ---------------- SOUNDS ---------------- */
+
+var wSound = new Audio("sounds/splode.mp3")
+var spaceSound = new Audio("sounds/splode2.mp3")
+var aSound = new Audio("sounds/move.mp3")
+var dSound = new Audio("sounds/move.mp3")
+
+document.addEventListener("keydown", function(event)
+{
+	if(event.key === "w")
+	{
+		wSound.currentTime = 0
+		wSound.play()
+	}
+
+	if(event.code === "Space")
+	{
+		spaceSound.currentTime = 0
+		spaceSound.play()
+	}
+
+	if(event.key === "a")
+	{
+		aSound.currentTime = 0
+		aSound.play()
+	}
+
+	if(event.key === "d")
+	{
+		dSound.currentTime = 0
+		dSound.play()
+	}
+})
+
+
+/* ---------------- GAME SETUP ---------------- */
+
+var gravity = 1
 var friction = {x:.85,y:.97}
 
-var stage = new GameObject({width:canvas.width, height:canvas.height});
+var stage = new GameObject({width:canvas.width, height:canvas.height})
 
-var level = new GameObject({x:0,y:0});
+var level = new GameObject({x:0,y:0})
 
-//Avatar
 var wiz = new GameObject({width:128, height:128, spriteData:playerData}).makeSprite(playerData)
 wiz.force=1
 
-//Ground
+
+/* ---------------- GROUND ---------------- */
+
 var ground = new GameObject({width:canvas.width*10, x:canvas.width*10/2-200,height:64,y:canvas.height-32, color:"green", world:level})
 ground.img.src=`images/ground3.png`
 
-//Platform
 var plat = new GameObject({width:256, height:64,y:canvas.height-200, color:"green", world:level})
 
 var leftBorder = new GameObject({width:50, height:canvas.height, world:level, x:0})
 
-//Tile grids
-var cave = new Grid(caveData, {world:level, x:1024, tileHeight:64, tileWidth:64});
-var caveBack = new Grid(caveBackData, {world:level, x:1024, tileHeight:64, tileWidth:64});
-var caveHit = new Grid(caveHitData, {world:level, x:1024, tileHeight:64, tileWidth:64});
 
-var g1 = new Group();
-g1.color= `rgb(251,0,254)`;
+/* ---------------- TILE MAPS ---------------- */
+
+var cave = new Grid(caveData, {world:level, x:1024, tileHeight:64, tileWidth:64})
+var caveBack = new Grid(caveBackData, {world:level, x:1024, tileHeight:64, tileWidth:64})
+var caveHit = new Grid(caveHitData, {world:level, x:1024, tileHeight:64, tileWidth:64})
+
+
+/* ---------------- GROUPS ---------------- */
+
+var g1 = new Group()
+g1.color=`rgb(251,0,254)`
 g1.add([ground, leftBorder, caveHit.grid])
 
-var rects = new Group();
+var rects = new Group()
 rects.add([ground,plat])
 
-var sprites = new Group();
+var sprites = new Group()
 sprites.add([caveBack.grid])
 
 var front = new Group()
 front.add([cave.grid])
 
-var levelItems=new Group();
-levelItems.add([caveBack.grid, ground, plat, cave.grid]);
+var levelItems=new Group()
+levelItems.add([caveBack.grid, ground, plat, cave.grid])
 
-//Sky
+
+/* ---------------- BACKGROUND ---------------- */
+
 var sky = new GameObject({width:canvas.width, height:canvas.height, color:"cyan"})
 sky.img.src = `images/sky2.png`
 
-//Background
 var rbg = new GameObject({x:level.x, y:level.y, width:1024, height:512})
 rbg.img.src=`images/hills.png`
 
 var bg = new GameObject({x:level.x,y:level.y, width:canvas.width*4, height:canvas.height})
 bg.img.src=`images/bgfull.png`
 
-/* BULLETS */
+
+/* ---------------- BULLETS ---------------- */
 
 var bullets=[]
-var canShoot=true;
-var shotTimer = 0;
-var shotDelay = 20;
+var canShoot=true
+var shotTimer = 0
+var shotDelay = 20
 
-var fireDelay = 15;
-var fireTimer = 0;
+var fireDelay = 15
+var fireTimer = 0
 
-var currentBullet = 0;
+var currentBullet = 0
 
 for(let i=0; i<100; i++)
 {
@@ -399,7 +728,8 @@ for(let i=0; i<100; i++)
 	bullets[i].y=-100000
 }
 
-/* GAME STATE */
+
+/* ---------------- GAME STATE ---------------- */
 
 gameStates[`level1`] = function()
 {
@@ -411,17 +741,17 @@ gameStates[`level1`] = function()
 
 	if(keys[`S`])
 	{
-		wiz.top={x:0,y:0};
+		wiz.top={x:0,y:0}
 		wiz.changeState(`crouch`)
 	}
 	else
 	{
-		wiz.top={x:0,y:-wiz.hitBoxHeight/2};
+		wiz.top={x:0,y:-wiz.hitBoxHeight/2}
 	}
 
 	if(keys[`D`])
 	{
-		wiz.dir=1;
+		wiz.dir=1
 		if(wiz.currentState != `crouch`) 
 		{
 			if(wiz.canJump)wiz.changeState(`walk`)
@@ -431,7 +761,7 @@ gameStates[`level1`] = function()
 
 	if(keys[`A`])
 	{
-		wiz.dir=-1;
+		wiz.dir=-1
 		if(wiz.currentState != `crouch`) 
 		{
 			if(wiz.canJump)wiz.changeState(`walk`)
@@ -441,24 +771,20 @@ gameStates[`level1`] = function()
 
 	if(keys[`W`] && wiz.canJump )
 	{
-		wiz.canJump = false;
-		wiz.vy = wiz.jumpHeight;
+		wiz.canJump = false
+		wiz.vy = wiz.jumpHeight
 		wiz.changeState(`jump`)
 	}
 
-	shotTimer--;
+	shotTimer--
 	if(shotTimer <=0) canShoot=true
 	else canShoot=false
-
-	/* START SHOOT DELAY */
 
 	if(keys[` `] && canShoot && fireTimer==0)
 	{
 		wiz.changeState(`attack`)
 		fireTimer = fireDelay
 	}
-
-	/* FIRE BULLET AFTER DELAY */
 
 	if(fireTimer > 0)
 	{
@@ -472,6 +798,7 @@ gameStates[`level1`] = function()
 			bullets[currentBullet].y = wiz.y + 20
 
 			currentBullet++
+
 			if(currentBullet >= bullets.length)
 			{
 				currentBullet = 0
@@ -480,8 +807,6 @@ gameStates[`level1`] = function()
 			shotTimer = shotDelay
 		}
 	}
-
-	/* PLAYER MOVEMENT */
 
 	wiz.vy+= gravity
 	wiz.vx *= friction.x
@@ -493,42 +818,38 @@ gameStates[`level1`] = function()
 
 	while(g1.collide(wiz.bottom) && wiz.vy>=0)
 	{
-		wiz.canJump = true;
-		wiz.vy=0;
-		wiz.y--;
-		offset.y--;
+		wiz.canJump = true
+		wiz.vy=0
+		wiz.y--
+		offset.y--
 	}
 
 	if(wiz.x < canvas.width*.33 || wiz.x > canvas.width *.66)
 	{
-		wiz.x -= offset.x;
-		level.x -= offset.x;
-		rbg.x -= offset.x*.5;
-		bg.x -= offset.x*.75;
+		wiz.x -= offset.x
+		level.x -= offset.x
+		rbg.x -= offset.x*.5
+		bg.x -= offset.x*.75
 	}
 
-	/* BACKGROUND */
-
-	var groundPattern = context.createPattern(ground.img, `repeat`);
+	var groundPattern = context.createPattern(ground.img, `repeat`)
 	ground.color = groundPattern
 	plat.color = groundPattern
 
-	var skyPattern = context.createPattern(sky.img, `repeat`);
+	var skyPattern = context.createPattern(sky.img, `repeat`)
 	sky.color = skyPattern
 
 	sky.render()
 
-	rbg.drawStaticImage({x:0,y:0});
-	rbg.drawStaticImage({x:-rbg.width,y:0});
-	rbg.drawStaticImage({x:rbg.width,y:0});
+	rbg.drawStaticImage({x:0,y:0})
+	rbg.drawStaticImage({x:-rbg.width,y:0})
+	rbg.drawStaticImage({x:rbg.width,y:0})
 
-	bg.drawStaticImage({x:0,y:0});
+	bg.drawStaticImage({x:0,y:0})
 
 	rects.render(`drawRect`)
-	sprites.play().render(`drawSprite`);
+	sprites.play().render(`drawSprite`)
 	wiz.play(function(){return}).drawSprite()
-
-	/* BULLET LOOP */
 
 	for(let i=0; i<bullets.length; i++)
 	{
@@ -543,5 +864,5 @@ gameStates[`level1`] = function()
 		)
 	}
 
-	front.play().render(`drawSprite`);
+	front.play().render(`drawSprite`)
 }
